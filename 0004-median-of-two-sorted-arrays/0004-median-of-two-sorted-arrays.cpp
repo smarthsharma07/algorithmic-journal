@@ -1,42 +1,35 @@
 class Solution {
 public:
-    vector<int> merge(vector<int>& nums1, vector<int>& nums2){
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        if (nums1.size()>nums2.size()){
+            return findMedianSortedArrays(nums2,nums1);
+        }
         int m = nums1.size();
         int n = nums2.size();
-        vector<int> mergarr;
-        mergarr.reserve(m+n);
-        int i = 0;
-        int j = 0;
-        int k = m+n-1;
-        while (i< nums1.size() && j<nums2.size()){
-            if (nums1[i]<=nums2[j]){
-                mergarr.push_back(nums1[i]);
-                i++;
+        int low = 0 , high = m;
+        while (low<=high){
+            int cuta = (low+high)/2;
+            int cutb = (m+n+1)/2 - cuta;
+            int leftA  = (cuta == 0) ? INT_MIN : nums1[cuta - 1];
+            int rightA = (cuta == m) ? INT_MAX : nums1[cuta];
+            int leftB  = (cutb == 0) ? INT_MIN : nums2[cutb - 1];
+            int rightB = (cutb == n) ? INT_MAX : nums2[cutb];
+            if (leftA<=rightB && leftB<=rightA){
+                if ((m+n)%2==1){
+                    return max(leftA,leftB);
+                }
+                else{
+                    return (max(leftA,leftB) + min(rightA,rightB)) / 2.0;
+                }
+            }
+            else if (leftA>rightB){
+                high = cuta-1;
             }
             else{
-                mergarr.push_back(nums2[j]);
-                j++;
+                low = cuta+1;
             }
         }
-        while (i < nums1.size()) {
-            mergarr.push_back(nums1[i]);
-            i++;
-        }
-        while (j < nums2.size()) {
-            mergarr.push_back(nums2[j]);
-            j++;
-        }
-        return mergarr;
-    }
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        vector<int>merged = merge(nums1,nums2);
-        int n = merged.size();
-        if (n%2==1){
-            return merged[n/2];
-        }
-        else{
-            return (merged[n/2 - 1] + merged[n/2]) / 2.0;
-        }
-
+        
+        return 0.0;
     }
 };
